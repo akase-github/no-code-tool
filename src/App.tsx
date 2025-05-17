@@ -1,84 +1,52 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import BlockList from './components/BlockList';
+import Canvas, { BlockData, BlockType } from './components/Canvas';
+import PropertiesPanel from './components/PropertiesPanel';
+import Preview from './components/Preview';
+import { v4 as uuidv4 } from 'uuid'; // ブロックID生成に使います（npm install uuid）
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
+const App: React.FC = () => {
+  const [blocks, setBlocks] = useState<BlockData[]>([]);
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
 
-function App() {
-  const [html, setHtml] = useState('');
-  const [status, setStatus] = useState('');
-
-  const handleSave = async () => {
-    const res = await fetch('/api/save-template.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        filename: 'template1.json',
-        content: html,
-      }),
-    });
-    const result = await res.json();
-    setStatus(result.status || '保存完了');
+  const handleAddBlock = (type: BlockType) => {
+    const newBlock: BlockData = {
+      id: uuidv4(),
+      type,
+      content:
+        type === 'text'
+          ? 'テキストを入力'
+          : type === 'image'
+          ? 'https://via.placeholder.com/300'
+          : 'ボタン',
+    };
+    setBlocks((prev) => [...prev, newBlock]);
   };
 
-  const handleLoad = async () => {
-    const res = await fetch('/api/load-template.php?filename=template1.json');
-    const result = await res.json();
-    setHtml(result.content || '');
-    setStatus('読み込み完了');
+  const handleSelectBlock = (id: string) => {
+    setSelectedBlockId(id);
   };
+
+  const handleUpdateBlock = (updatedBlock: BlockData) => {
+    setBlocks((prev) =>
+      prev.map((block) => (block.id === updatedBlock.id ? updatedBlock : block))
+    );
+  };
+
+  const selectedBlock = blocks.find((b) => b.id === selectedBlockId) || null;
 
   return (
-    <div style={{ display: 'flex', height: '100vh', padding: 20, boxSizing: 'border-box' }}>
-      {/* 左：エディタ */}
-      <div style={{ flex: 1, marginRight: 20 }}>
-        <h2>HTMLエディター</h2>
-        <textarea
-          style={{ width: '100%', height: '80%' }}
-          value={html}
-          onChange={(e) => setHtml(e.target.value)}
-        />
-        <div style={{ marginTop: 10 }}>
-          <button onClick={handleSave}>💾 保存</button>
-          <button onClick={handleLoad} style={{ marginLeft: 10 }}>📂 読み込み</button>
-        </div>
-        <p>{status}</p>
-      </div>
-
-      {/* 右：プレビュー */}
-      <div style={{ flex: 1, borderLeft: '1px solid #ccc', paddingLeft: 20 }}>
-        <h2>プレビュー</h2>
-        <div
-          style={{
-            border: '1px solid #ddd',
-            padding: 10,
-            minHeight: '80%',
-            backgroundColor: '#f9f9f9',
-          }}
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </div>
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <BlockList onAddBlock={handleAddBlock} />
+      <Canvas
+        blocks={blocks}
+        selectedBlockId={selectedBlockId}
+        onSelectBlock={handleSelectBlock}
+      />
+      <Preview blocks={blocks} />
+      <PropertiesPanel selectedBlock={selectedBlock} onUpdateBlock={handleUpdateBlock} />
     </div>
   );
-}
+};
 
 export default App;
