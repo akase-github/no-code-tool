@@ -34,6 +34,14 @@ const App: React.FC = () => {
     );
   };
 
+  const handleDeleteBlock = (id: string) => {
+    setBlocks((prev) => prev.filter((block) => block.id !== id));
+    if (selectedBlockId === id) {
+      setSelectedBlockId(null);
+    }
+  };
+
+
   const selectedBlock = blocks.find((b) => b.id === selectedBlockId) || null;
 
   return (
@@ -44,6 +52,7 @@ const App: React.FC = () => {
         selectedBlockId={selectedBlockId}
         onSelectBlock={handleSelectBlock}
         setBlocks={setBlocks}
+        onDeleteBlock={handleDeleteBlock}
       />
       <Preview blocks={blocks} />
       <PropertiesPanel selectedBlock={selectedBlock} onUpdateBlock={handleUpdateBlock} />

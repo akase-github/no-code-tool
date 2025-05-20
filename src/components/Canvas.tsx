@@ -21,13 +21,15 @@ interface CanvasProps {
   onSelectBlock: (id: string) => void;
   selectedBlockId: string | null;
   setBlocks: (newBlocks: BlockData[]) => void;
+  onDeleteBlock: (id: string) => void;
 }
 
 const SortableBlock: React.FC<{
   block: BlockData;
   selected: boolean;
   onSelect: (id: string) => void;
-}> = ({ block, selected, onSelect }) => {
+  onDelete: (id: string) => void;
+}> = ({ block, selected, onSelect, onDelete }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: block.id,
   });
@@ -43,15 +45,44 @@ const SortableBlock: React.FC<{
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
+      {/* ドラッグハンドル */}
       <div {...listeners} style={{ cursor: 'grab' }}>≡</div>
-      <div onClick={() => onSelect(block.id)}>
+
+      {/* ブロック本体（クリック選択） */}
+      <div
+        onClick={() => onSelect(block.id)}
+        style={{ cursor: 'default', position: 'relative' }}
+      >
+        {/* ✕ 削除ボタン */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // 親のonClick防止
+            onDelete(block.id);
+          }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            background: 'transparent',
+            border: 'none',
+            fontSize: '16px',
+            cursor: 'pointer',
+            color: '#999',
+          }}
+          aria-label="削除"
+        >
+          ×
+        </button>
+
+        {/* 内容表示 */}
         {block.type === 'text' && <p>{block.content}</p>}
-        {block.type === 'image' && <img src={block.content} alt="画像" style={{ maxWidth: '100%' }} />}
+        {block.type === 'image' && (
+          <img src={block.content} alt="画像" style={{ maxWidth: '100%' }} />
+        )}
         {block.type === 'button' && <button>{block.content}</button>}
       </div>
     </div>
   );
-
 };
 
 const Canvas: React.FC<CanvasProps> = ({
@@ -59,6 +90,7 @@ const Canvas: React.FC<CanvasProps> = ({
   onSelectBlock,
   selectedBlockId,
   setBlocks,
+  onDeleteBlock,
 }) => {
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -81,7 +113,7 @@ const Canvas: React.FC<CanvasProps> = ({
         overflowY: 'auto',
       }}
     >
-      <h3 style={{ marginBottom: '10px' }}>キャンバス（ドラッグで並び替え）</h3>
+      <h3 style={{ marginBottom: '10px' }}>キャンバス（ドラッグで並び替え・✕で削除）</h3>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
           {blocks.map((block) => (
@@ -90,6 +122,7 @@ const Canvas: React.FC<CanvasProps> = ({
               block={block}
               selected={block.id === selectedBlockId}
               onSelect={onSelectBlock}
+              onDelete={onDeleteBlock}
             />
           ))}
         </SortableContext>

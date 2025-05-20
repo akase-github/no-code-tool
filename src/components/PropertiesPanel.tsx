@@ -1,4 +1,3 @@
-// src/components/PropertiesPanel.tsx
 import React from 'react';
 import { BlockData } from '../type';
 

@@ -1,4 +1,3 @@
-// src/components/BlockList.tsx
 import React from 'react';
 import { BlockType } from '../type';
 

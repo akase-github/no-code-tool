@@ -1,4 +1,3 @@
-// src/components/Preview.tsx
 import React, { useState } from 'react';
 import { BlockData } from '../type';
 
