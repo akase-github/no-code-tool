@@ -1,6 +1,6 @@
 // src/components/PropertiesPanel.tsx
 import React from 'react';
-import { BlockData } from './Canvas';
+import { BlockData } from '../type';
 
 interface PropertiesPanelProps {
   selectedBlock: BlockData | null;

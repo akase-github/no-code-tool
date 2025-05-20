@@ -1,6 +1,6 @@
 // src/components/Preview.tsx
 import React, { useState } from 'react';
-import { BlockData } from './Canvas';
+import { BlockData } from '../type';
 
 interface PreviewProps {
   blocks: BlockData[];

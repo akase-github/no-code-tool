@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import BlockList from './components/BlockList';
-import Canvas, { BlockData, BlockType } from './components/Canvas';
 import PropertiesPanel from './components/PropertiesPanel';
 import Preview from './components/Preview';
 import { v4 as uuidv4 } from 'uuid'; // ブロックID生成に使います（npm install uuid）
+import Canvas from './components/Canvas';
+import { BlockData, BlockType } from './type';
 
 const App: React.FC = () => {
   const [blocks, setBlocks] = useState<BlockData[]>([]);
@@ -42,6 +43,7 @@ const App: React.FC = () => {
         blocks={blocks}
         selectedBlockId={selectedBlockId}
         onSelectBlock={handleSelectBlock}
+        setBlocks={setBlocks}
       />
       <Preview blocks={blocks} />
       <PropertiesPanel selectedBlock={selectedBlock} onUpdateBlock={handleUpdateBlock} />

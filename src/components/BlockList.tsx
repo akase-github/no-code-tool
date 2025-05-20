@@ -1,7 +1,7 @@
 // src/components/BlockList.tsx
 import React from 'react';
+import { BlockType } from '../type';
 
-type BlockType = 'text' | 'image' | 'button';
 
 interface BlockListProps {
   onAddBlock: (type: BlockType) => void;
