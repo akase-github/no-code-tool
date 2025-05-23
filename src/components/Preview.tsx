@@ -7,6 +7,12 @@ interface PreviewProps {
 const Preview: React.FC<PreviewProps> = ({ html }) => {
   const [isMobileView, setIsMobileView] = useState(false);
 
+  const handleOpenHtmlInNewTab = () => {
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  };
+
   return (
     <div
       style={{
@@ -28,6 +34,12 @@ const Preview: React.FC<PreviewProps> = ({ html }) => {
           style={{ marginLeft: '8px' }}
         >
           📱 モバイル表示
+        </button>
+          <button
+            onClick={handleOpenHtmlInNewTab}
+            style={{ marginLeft: '8px' }}
+          >
+          🔗 別タブ
         </button>
       </div>
 
