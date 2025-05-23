@@ -21,7 +21,7 @@ const BlockList: React.FC<BlockListProps> = ({ onAddBlock, onTemplateSelect }) =
         onChange={(e) => onTemplateSelect(e.target.value)}
         style={{ width: '100%', marginBottom: '20px', padding: '5px' }}
       >
-        <option value="">テンプレートを選択</option>
+        <option value="">⚠️テンプレートを選択してください</option>
         {templates.map((tpl) => (
           <option key={tpl.id} value={tpl.id}>
             {tpl.name}
