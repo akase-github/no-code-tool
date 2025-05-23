@@ -1,25 +1,11 @@
 import React, { useState } from 'react';
-import { BlockData } from '../type';
 
 interface PreviewProps {
-  blocks: BlockData[];
+  html: string;
 }
 
-const Preview: React.FC<PreviewProps> = ({ blocks }) => {
+const Preview: React.FC<PreviewProps> = ({ html }) => {
   const [isMobileView, setIsMobileView] = useState(false);
-
-  const renderBlock = (block: BlockData) => {
-    switch (block.type) {
-      case 'text':
-        return <p>{block.content}</p>;
-      case 'image':
-        return <img src={block.content} alt="画像" style={{ maxWidth: '100%' }} />;
-      case 'button':
-        return <button>{block.content}</button>;
-      default:
-        return null;
-    }
-  };
 
   return (
     <div
@@ -52,14 +38,10 @@ const Preview: React.FC<PreviewProps> = ({ blocks }) => {
           padding: '10px',
           backgroundColor: '#fff',
           margin: '0 auto',
+          minHeight: '300px',
         }}
-      >
-        {blocks.map((block) => (
-          <div key={block.id} style={{ marginBottom: '12px' }}>
-            {renderBlock(block)}
-          </div>
-        ))}
-      </div>
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </div>
   );
 };

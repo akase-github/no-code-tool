@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { BlockData } from '../type';
+import { BlockData } from '../types/index';
 
 interface CanvasProps {
   blocks: BlockData[];
@@ -79,7 +79,9 @@ const SortableBlock: React.FC<{
         {block.type === 'image' && (
           <img src={block.content} alt="画像" style={{ maxWidth: '100%' }} />
         )}
-        {block.type === 'button' && <button>{block.content}</button>}
+        {block.type === 'button' && (
+          <img src={block.content} alt="画像ボタン" style={{ maxWidth: '100%' }} />
+        )}
       </div>
     </div>
   );

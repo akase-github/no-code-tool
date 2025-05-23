@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlockData } from '../type';
+import { BlockData } from '../types/index';
 
 interface PropertiesPanelProps {
   selectedBlock: BlockData | null;
