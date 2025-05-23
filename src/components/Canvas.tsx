@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { BlockData } from '../types/index';
+import { BlockData } from '../types/types';
 
 interface CanvasProps {
   blocks: BlockData[];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlockType } from '../types/index';
+import { BlockType } from '../types/types';
 import { templates } from '../templates/templates';
 
 interface BlockListProps {

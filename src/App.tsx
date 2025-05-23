@@ -4,7 +4,7 @@ import PropertiesPanel from './components/PropertiesPanel';
 import Preview from './components/Preview';
 import Canvas from './components/Canvas';
 import { v4 as uuidv4 } from 'uuid';
-import { BlockData, BlockType } from './types';
+import { BlockData, BlockType } from './types/types';
 import { templates, HtmlTemplate } from './templates/templates';
 
 const App: React.FC = () => {
