@@ -19,12 +19,10 @@ const App: React.FC = () => {
     const newBlock: BlockData = {
       id: uuidv4(),
       type,
-      content:
-        type === 'text'
-          ? 'テキストを入力'
-          : type === 'image'
-          ? 'https://via.placeholder.com/300'
-          : 'ボタン',
+      text: 'テキストを入力',
+      src: '画像URLを入力',
+      alt: 'altテキストを入力',
+      href: 'リンクを入力'
     };
     setBlocks((prev) => [...prev, newBlock]);
   };
@@ -59,9 +57,9 @@ const App: React.FC = () => {
   }, [selectedTemplate]);
 
   const renderedBlocks = blocks.map((b) => {
-    if (b.type === 'text') return `<tr><td align="center"><p>${b.content}</p></td></tr>`;
-    if (b.type === 'image') return `<tr><td align="center"><img src="${b.content}" alt="image" width="750" /></td></tr>`;
-    if (b.type === 'button') return `<tr><td align="center"><a href=""><img src="${b.content}" alt="image" width="750" /></button></td></tr>`;
+    if (b.type === 'text') return `<tr><td align="center"><p>${b.text}</p></td></tr>`;
+    if (b.type === 'image') return `<tr><td align="center"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></td></tr>`;
+    if (b.type === 'button') return `<tr><td align="center"><a href="${b.href}"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></button></td></tr>`;
     return '';
   }).join('');
 

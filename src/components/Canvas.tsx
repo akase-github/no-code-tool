@@ -75,12 +75,12 @@ const SortableBlock: React.FC<{
         </button>
 
         {/* 内容表示 */}
-        {block.type === 'text' && <p>{block.content}</p>}
+        {block.type === 'text' && <p>{block.text}</p>}
         {block.type === 'image' && (
-          <img src={block.content} alt="画像" style={{ maxWidth: '100%' }} />
+          <img src={block.src} alt="画像" style={{ maxWidth: '100%' }} />
         )}
         {block.type === 'button' && (
-          <img src={block.content} alt="画像ボタン" style={{ maxWidth: '100%' }} />
+          <img src={block.src} alt="画像ボタン" style={{ maxWidth: '100%' }} />
         )}
       </div>
     </div>
