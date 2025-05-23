@@ -35,7 +35,6 @@ const Preview: React.FC<PreviewProps> = ({ html }) => {
         style={{
           width: isMobileView ? '375px' : '100%',
           border: '1px solid #ddd',
-          padding: '10px',
           backgroundColor: '#fff',
           margin: '0 auto',
           minHeight: '300px',
