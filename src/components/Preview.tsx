@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface PreviewProps {
   html: string;
 }
 
 const Preview: React.FC<PreviewProps> = ({ html }) => {
-  const [isMobileView, setIsMobileView] = useState(false);
-
   const handleOpenHtmlInNewTab = () => {
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -16,7 +14,7 @@ const Preview: React.FC<PreviewProps> = ({ html }) => {
   return (
     <div
       style={{
-        width: '300px',
+        width: '750px',
         borderLeft: '1px solid #ccc',
         padding: '10px',
         backgroundColor: '#fafafa',
@@ -25,27 +23,14 @@ const Preview: React.FC<PreviewProps> = ({ html }) => {
       <h3>プレビュー</h3>
 
       <div style={{ marginBottom: '10px' }}>
-        <button onClick={() => setIsMobileView(false)} disabled={!isMobileView}>
-          🖥️ PC表示
-        </button>
-        <button
-          onClick={() => setIsMobileView(true)}
-          disabled={isMobileView}
-          style={{ marginLeft: '8px' }}
-        >
-          📱 モバイル表示
-        </button>
-          <button
-            onClick={handleOpenHtmlInNewTab}
-            style={{ marginLeft: '8px' }}
-          >
-          🔗 別タブ
+        <button onClick={handleOpenHtmlInNewTab}>
+          🔗 別タブで開く
         </button>
       </div>
 
       <div
         style={{
-          width: isMobileView ? '375px' : '100%',
+          width: '100%',
           border: '1px solid #ddd',
           backgroundColor: '#fff',
           margin: '0 auto',

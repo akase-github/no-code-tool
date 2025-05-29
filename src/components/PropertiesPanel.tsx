@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BlockData } from '../types/types';
 
 interface PropertiesPanelProps {
@@ -10,6 +10,8 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   selectedBlock,
   onUpdateBlock,
 }) => {
+  const [position, setPosition] = useState({ x: 500, y: 500 });
+
   if (!selectedBlock) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,13 +19,36 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
     onUpdateBlock({ ...selectedBlock, [name]: value });
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const origX = position.x;
+    const origY = position.y;
+
+    document.body.style.userSelect = 'none';
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const newX = origX + (moveEvent.clientX - startX);
+      const newY = origY + (moveEvent.clientY - startY);
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
   return (
     <div
       style={{
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        position: 'absolute',
+        left: position.x,
+        top: position.y,
         background: '#fff',
         border: '1px solid #ccc',
         borderRadius: '8px',
@@ -31,11 +56,12 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         zIndex: 1000,
         minWidth: '300px',
+        cursor: 'move',
       }}
+      onMouseDown={handleMouseDown}
     >
-      <h4>プロパティ編集</h4>
+      <h4 style={{ marginTop: 0 }}>プロパティ編集</h4>
 
-      {/* テキストブロック用 */}
       {selectedBlock.type === 'text' && (
         <label style={{ display: 'block', marginTop: '10px' }}>
           テキスト内容：
@@ -49,7 +75,6 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         </label>
       )}
 
-      {/* 画像ブロック用 */}
       {(selectedBlock.type === 'image' || selectedBlock.type === 'button') && (
         <>
           <label style={{ display: 'block', marginTop: '10px' }}>
@@ -75,7 +100,6 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         </>
       )}
 
-      {/* ボタンブロック用 */}
       {selectedBlock.type === 'button' && (
         <label style={{ display: 'block', marginTop: '10px' }}>
           リンク：

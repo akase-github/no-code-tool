@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [templateHtml, setTemplateHtml] = useState<string>('');
   const [titleText, setTitleText] = useState('メールタイトル');
   const [preheaderText, setPreheaderText] = useState('プリヘッダーのテキスト');
+  const [canvasWidth, setCanvasWidth] = useState(600); // ⭐ 追加：Canvasの幅を管理
 
   const handleAddBlock = (type: BlockType) => {
     const newBlock: BlockData = {
@@ -59,7 +60,7 @@ const App: React.FC = () => {
   const renderedBlocks = blocks.map((b) => {
     if (b.type === 'text') return `<tr><td align="center"><p>${b.text}</p></td></tr>`;
     if (b.type === 'image') return `<tr><td align="center"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></td></tr>`;
-    if (b.type === 'button') return `<tr><td align="center"><a href="${b.href}"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></button></td></tr>`;
+    if (b.type === 'button') return `<tr><td align="center"><a href="${b.href}"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></a></td></tr>`;
     return '';
   }).join('');
 
@@ -73,44 +74,89 @@ const App: React.FC = () => {
 
   const selectedBlock = blocks.find((b) => b.id === selectedBlockId) || null;
 
-  return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      {/* サイドバー：ブロックとテンプレ選択 */}
+   return (
+    <div style={{ display: 'flex', height: '100vh', overflowX: 'auto', overscrollBehaviorX: 'none', }}>
+      {/* サイドバー */}
       <div style={{ width: '200px', borderRight: '1px solid #ccc', padding: '10px' }}>
         <BlockList onAddBlock={handleAddBlock} onTemplateSelect={handleTemplateSelect} />
         <div style={{ marginTop: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '8px' }}>
-            タイトル：
-            <input
-              type="text"
-              value={titleText}
-              onChange={(e) => setTitleText(e.target.value)}
-              style={{ width: '100%', marginTop: '4px' }}
-            />
-          </label>
-          <label style={{ display: 'block' }}>
-            プリヘッダー：
-            <input
-              type="text"
-              value={preheaderText}
-              onChange={(e) => setPreheaderText(e.target.value)}
-              style={{ width: '100%', marginTop: '4px' }}
-            />
-          </label>
+          {/* ...タイトル・プリヘッダー入力... */}
         </div>
       </div>
 
-      {/* キャンバス */}
-      <Canvas
-        blocks={blocks}
-        selectedBlockId={selectedBlockId}
-        onSelectBlock={handleSelectBlock}
-        setBlocks={setBlocks}
-        onDeleteBlock={handleDeleteBlock}
-      />
+      {/* キャンバスとプレビュー中間エリア */}
+      <div
+        style={{ display: 'flex' }}
+        onWheel={(e) => {
+          // 横スクロールが発生した場合に親（ブラウザ）への伝播を防ぐ
+          if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            e.stopPropagation();
+          }
+        }}
+      >
+        {/* キャンバス */}
+        <div
+          style={{
+            width: `${canvasWidth}px`,
+            borderRight: '1px solid #ccc',
+            padding: '10px',
+            boxSizing: 'border-box',
+            position: 'relative',
+          }}
+        >
+          <Canvas
+            blocks={blocks}
+            selectedBlockId={selectedBlockId}
+            onSelectBlock={handleSelectBlock}
+            setBlocks={setBlocks}
+            onDeleteBlock={handleDeleteBlock}
+          />
+        </div>
 
-      {/* プレビュー */}
-      <Preview html={finalHtml} />
+        {/* リサイズバー */}
+        <div
+          style={{
+            width: '12px',
+            cursor: 'col-resize',
+            backgroundColor: '#eee',
+            position: 'relative',
+          }}
+          onMouseDown={(e) => {
+            const startX = e.clientX;
+            const startWidth = canvasWidth;
+            document.body.style.userSelect = 'none';
+
+            const onMouseMove = (e: MouseEvent) => {
+              const newWidth = Math.max(300, startWidth + (e.clientX - startX));
+              setCanvasWidth(newWidth);
+            };
+
+            const onMouseUp = () => {
+              document.body.style.userSelect = '';
+              document.removeEventListener('mousemove', onMouseMove);
+              document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: '50%',
+              width: '2px',
+              backgroundColor: '#ccc',
+              transform: 'translateX(-50%)',
+            }}
+          />
+        </div>
+
+        {/* プレビュー */}
+        <Preview html={finalHtml} />
+      </div>
 
       {/* プロパティ編集 */}
       <PropertiesPanel selectedBlock={selectedBlock} onUpdateBlock={handleUpdateBlock} />
