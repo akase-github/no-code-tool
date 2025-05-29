@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { BlockData } from '../types/types';
 
 interface PropertiesPanelProps {
@@ -11,6 +11,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onUpdateBlock,
 }) => {
   const [position, setPosition] = useState({ x: 500, y: 500 });
+  const panelRef = useRef<HTMLDivElement>(null);
 
   if (!selectedBlock) return null;
 
@@ -45,6 +46,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
 
   return (
     <div
+      ref={panelRef}
       style={{
         position: 'absolute',
         left: position.x,
@@ -52,66 +54,80 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
         background: '#fff',
         border: '1px solid #ccc',
         borderRadius: '8px',
-        padding: '16px',
+        padding: '0px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         zIndex: 1000,
         minWidth: '300px',
-        cursor: 'move',
       }}
-      onMouseDown={handleMouseDown}
     >
-      <h4 style={{ marginTop: 0 }}>プロパティ編集</h4>
+      {/* ドラッグ用ヘッダー */}
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          cursor: 'move',
+          background: '#f0f0f0',
+          padding: '10px 16px',
+          borderBottom: '1px solid #ccc',
+          borderTopLeftRadius: '8px',
+          borderTopRightRadius: '8px',
+          fontWeight: 'bold',
+        }}
+      >
+        プロパティ編集
+      </div>
 
-      {selectedBlock.type === 'text' && (
-        <label style={{ display: 'block', marginTop: '10px' }}>
-          テキスト内容：
-          <input
-            type="text"
-            name="text"
-            value={selectedBlock.text}
-            onChange={handleChange}
-            style={{ width: '100%', marginTop: '5px', padding: '6px' }}
-          />
-        </label>
-      )}
-
-      {(selectedBlock.type === 'image' || selectedBlock.type === 'button') && (
-        <>
+      <div style={{ padding: '16px' }}>
+        {selectedBlock.type === 'text' && (
           <label style={{ display: 'block', marginTop: '10px' }}>
-            画像URL：
+            テキスト内容：
             <input
               type="text"
-              name="src"
-              value={selectedBlock.src}
+              name="text"
+              value={selectedBlock.text}
               onChange={handleChange}
               style={{ width: '100%', marginTop: '5px', padding: '6px' }}
             />
           </label>
+        )}
+
+        {(selectedBlock.type === 'image' || selectedBlock.type === 'button') && (
+          <>
+            <label style={{ display: 'block', marginTop: '10px' }}>
+              画像URL：
+              <input
+                type="text"
+                name="src"
+                value={selectedBlock.src}
+                onChange={handleChange}
+                style={{ width: '100%', marginTop: '5px', padding: '6px' }}
+              />
+            </label>
+            <label style={{ display: 'block', marginTop: '10px' }}>
+              altテキスト：
+              <input
+                type="text"
+                name="alt"
+                value={selectedBlock.alt || ''}
+                onChange={handleChange}
+                style={{ width: '100%', marginTop: '5px', padding: '6px' }}
+              />
+            </label>
+          </>
+        )}
+
+        {selectedBlock.type === 'button' && (
           <label style={{ display: 'block', marginTop: '10px' }}>
-            altテキスト：
+            リンク：
             <input
               type="text"
-              name="alt"
-              value={selectedBlock.alt || ''}
+              name="href"
+              value={selectedBlock.href || ''}
               onChange={handleChange}
               style={{ width: '100%', marginTop: '5px', padding: '6px' }}
             />
           </label>
-        </>
-      )}
-
-      {selectedBlock.type === 'button' && (
-        <label style={{ display: 'block', marginTop: '10px' }}>
-          リンク：
-          <input
-            type="text"
-            name="href"
-            value={selectedBlock.href || ''}
-            onChange={handleChange}
-            style={{ width: '100%', marginTop: '5px', padding: '6px' }}
-          />
-        </label>
-      )}
+        )}
+      </div>
     </div>
   );
 };

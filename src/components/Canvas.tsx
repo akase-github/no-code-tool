@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -6,6 +6,8 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -39,42 +41,64 @@ const SortableBlock: React.FC<{
     transition,
     border: selected ? '2px solid #007bff' : '1px solid #ccc',
     background: '#fff',
-    padding: '10px',
     marginBottom: '10px',
+    boxShadow: selected ? '0 0 0 2px rgba(0, 123, 255, 0.2)' : 'none',
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      {/* ドラッグハンドル */}
-      <div {...listeners} style={{ cursor: 'grab' }}>≡</div>
-
-      {/* ブロック本体（クリック選択） */}
+      {/* ヘッダー */}
       <div
-        onClick={() => onSelect(block.id)}
-        style={{ cursor: 'default', position: 'relative' }}
+        style={{
+          backgroundColor: '#f0f0f0',
+          padding: '8px',
+          borderBottom: '1px solid #ddd',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontWeight: 'bold',
+          color: '#555',
+        }}
       >
-        {/* ✕ 削除ボタン */}
+        {/* ドラッグ可能エリア */}
+        <div
+          {...listeners}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexGrow: 1,
+            cursor: 'grab',
+            userSelect: 'none',
+          }}
+        >
+          ≡
+        </div>
+
+        {/* 削除ボタン */}
         <button
           onClick={(e) => {
-            e.stopPropagation(); // 親のonClick防止
+            e.stopPropagation();
             onDelete(block.id);
           }}
           style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
             background: 'transparent',
             border: 'none',
             fontSize: '16px',
             cursor: 'pointer',
             color: '#999',
+            padding: '0 8px',
           }}
           aria-label="削除"
         >
           ×
         </button>
+      </div>
 
-        {/* 内容表示 */}
+      {/* ブロック本体 */}
+      <div
+        onClick={() => onSelect(block.id)}
+        style={{ cursor: 'default', padding: '10px' }}
+      >
         {block.type === 'text' && <p>{block.text}</p>}
         {block.type === 'image' && (
           <img src={block.src} alt="画像" style={{ maxWidth: '100%' }} />
@@ -95,9 +119,17 @@ const Canvas: React.FC<CanvasProps> = ({
   onDeleteBlock,
 }) => {
   const sensors = useSensors(useSensor(PointerSensor));
+  const [draggingBlock, setDraggingBlock] = useState<BlockData | null>(null);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const id = event.active.id;
+    const block = blocks.find((b) => b.id === id) || null;
+    setDraggingBlock(block);
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setDraggingBlock(null);
     if (active.id !== over?.id) {
       const oldIndex = blocks.findIndex((b) => b.id === active.id);
       const newIndex = blocks.findIndex((b) => b.id === over?.id);
@@ -116,7 +148,12 @@ const Canvas: React.FC<CanvasProps> = ({
       }}
     >
       <h3 style={{ marginBottom: '10px' }}>キャンバス（ドラッグで並び替え・✕で削除）</h3>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
           {blocks.map((block) => (
             <SortableBlock
@@ -128,6 +165,28 @@ const Canvas: React.FC<CanvasProps> = ({
             />
           ))}
         </SortableContext>
+
+        <DragOverlay>
+          {draggingBlock && (
+            <div
+              style={{
+                width: '100%',
+                maxWidth: '750px',
+                padding: '10px',
+                backgroundColor: '#fff',
+                border: '1px solid #ccc',
+              }}
+            >
+              {draggingBlock.type === 'text' && <p>{draggingBlock.text}</p>}
+              {draggingBlock.type === 'image' && (
+                <img src={draggingBlock.src} alt="画像" style={{ maxWidth: '100%' }} />
+              )}
+              {draggingBlock.type === 'button' && (
+                <img src={draggingBlock.src} alt="画像ボタン" style={{ maxWidth: '100%' }} />
+              )}
+            </div>
+          )}
+        </DragOverlay>
       </DndContext>
     </div>
   );
