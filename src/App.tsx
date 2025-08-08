@@ -66,10 +66,7 @@ const App: React.FC = () => {
 
   const finalHtml = templateHtml
     .replace('TITLE_PLACEHOLDER', titleText)
-    .replace(
-      '<span id="preheader-placeholder" style="color:#f3f3f3;font-size:0;line-height:0;"></span>',
-      `<span style="color:#f3f3f3;font-size:0;line-height:0;">${preheaderText}</span>`
-    )
+    .replace('PREHEADER_PLACEHOLDER', preheaderText)
     .replace('<tr id="block-placeholder"></tr>', renderedBlocks)
 
   const selectedBlock = blocks.find((b) => b.id === selectedBlockId) || null;
