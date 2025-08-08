@@ -73,12 +73,14 @@ const SortableBlock: React.FC<{
 
       {/* ブロック本体 */}
       <div onClick={() => onSelect(block.id)} className="canvas-block__body">
-        {block.type === 'text' && <p>{block.text}</p>}
         {block.type === 'image' && (
           <img src={block.src} alt="画像" style={{ maxWidth: '100%' }} />
         )}
         {block.type === 'button' && (
           <img src={block.src} alt="画像ボタン" style={{ maxWidth: '100%' }} />
+        )}
+        {block.type === 'custom' && (
+          <div dangerouslySetInnerHTML={{ __html: block.html || '' }} />
         )}
       </div>
     </div>
@@ -151,12 +153,14 @@ const Canvas: React.FC<CanvasProps> = ({
                 border: '1px solid #ccc',
               }}
             >
-              {draggingBlock.type === 'text' && <p>{draggingBlock.text}</p>}
               {draggingBlock.type === 'image' && (
                 <img src={draggingBlock.src} alt="画像" style={{ maxWidth: '100%' }} />
               )}
               {draggingBlock.type === 'button' && (
                 <img src={draggingBlock.src} alt="画像ボタン" style={{ maxWidth: '100%' }} />
+              )}
+              {draggingBlock.type === 'custom' && (
+                <div dangerouslySetInnerHTML={{ __html: draggingBlock.html || '' }} />
               )}
             </div>
           )}

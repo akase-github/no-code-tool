@@ -14,17 +14,16 @@ const App: React.FC = () => {
   const [templateHtml, setTemplateHtml] = useState<string>('');
   const [titleText, setTitleText] = useState('メールタイトル');
   const [preheaderText, setPreheaderText] = useState('プリヘッダーのテキスト');
-  const [canvasWidth, setCanvasWidth] = useState(600); // ⭐ 追加：Canvasの幅を管理
+  const [canvasWidth, setCanvasWidth] = useState(600); // ⭐ Canvasの幅
 
   const handleAddBlock = (type: BlockType) => {
-    const newBlock: BlockData = {
-      id: uuidv4(),
-      type,
-      text: 'テキストを入力',
-      src: '画像URLを入力',
-      alt: 'altテキストを入力',
-      href: 'リンクを入力'
-    };
+    const base: BlockData = { id: uuidv4(), type };
+    const newBlock: BlockData =
+      type === 'image'
+        ? { ...base, src: '画像URLを入力', alt: 'altテキストを入力' }
+        : type === 'button'
+        ? { ...base, src: '画像URLを入力', alt: 'ボタン画像のalt', href: 'リンクを入力' }
+        : { ...base, html: '<!-- カスタムHTMLをここに -->' };
     setBlocks((prev) => [...prev, newBlock]);
   };
 
@@ -57,15 +56,29 @@ const App: React.FC = () => {
       .then((html) => setTemplateHtml(html));
   }, [selectedTemplate]);
 
-  const renderedBlocks = blocks.map((b) => {
-    if (b.type === 'text') return `<tr><td align="center"><p>${b.text}</p></td></tr>`;
-    if (b.type === 'image') return `<tr><td align="center"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></td></tr>`;
-    if (b.type === 'button') return `<tr><td align="center"><a href="${b.href}"><img src="${b.src}" alt="${b.alt || ''}" width="750" /></a></td></tr>`;
-    return '';
-  }).join('');
+  const renderedBlocks = blocks
+    .map((b) => {
+      if (b.type === 'image') {
+        return `<tr><td align="center"><img src="${b.src || ''}" alt="${b.alt || ''}" width="750" /></td></tr>`;
+      }
+      if (b.type === 'button') {
+        return `<tr><td align="center"><a href="${b.href || '#'}"><img src="${b.src || ''}" alt="${b.alt || ''}" width="750" /></a></td></tr>`;
+      }
+      if (b.type === 'custom') {
+        const html = (b.html || '').trim();
+        const isRow = /<tr[\s>]/i.test(html);
+        return isRow ? html : `<tr><td align="center">${html}</td></tr>`;
+      }
+      return '';
+    })
+    .join('');
 
   const finalHtml = templateHtml
     .replace('TITLE_PLACEHOLDER', titleText)
+    .replace(
+      '<span id="preheader-placeholder" style="color:#f3f3f3;font-size:0;line-height:0;"></span>',
+      `<div style="display:none; mso-hide:all; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">${preheaderText}</div>`
+    )
     .replace('PREHEADER_PLACEHOLDER', preheaderText)
     .replace('<tr id="block-placeholder"></tr>', renderedBlocks)
 

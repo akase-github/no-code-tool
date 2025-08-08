@@ -9,9 +9,9 @@ interface BlockListProps {
 
 const BlockList: React.FC<BlockListProps> = ({ onAddBlock, onTemplateSelect }) => {
   const blocks: { type: BlockType; label: string }[] = [
-    { type: 'text', label: '📝 テキスト' },
     { type: 'image', label: '🖼️ 画像' },
     { type: 'button', label: '🔘 画像ボタン' },
+    { type: 'custom', label: '🧩 カスタム' },
   ];
 
   return (

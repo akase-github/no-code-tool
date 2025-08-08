@@ -86,10 +86,21 @@ body {
 }
 
 .preview-pane {
-  width: 750px;
+  width: 820px;
   background: var(--panel-bg);
   border-left: 1px solid var(--border);
   padding: 16px;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* プレビュー内のテーブル幅が余白で切れないように */
+.preview-pane > div[style] {
+  /* 内側の白背景ボックス */
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Forms */

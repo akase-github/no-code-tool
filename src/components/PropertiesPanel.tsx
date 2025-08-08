@@ -15,7 +15,7 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
 
   if (!selectedBlock) return null;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     onUpdateBlock({ ...selectedBlock, [name]: value });
   };
@@ -56,19 +56,6 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
       </div>
 
       <div className="properties-panel__body">
-        {selectedBlock.type === 'text' && (
-          <label className="field">
-            テキスト内容：
-            <input
-              type="text"
-              name="text"
-              value={selectedBlock.text}
-              onChange={handleChange}
-              className="ui-input"
-              style={{ marginTop: '6px' }}
-            />
-          </label>
-        )}
 
         {(selectedBlock.type === 'image' || selectedBlock.type === 'button') && (
           <>
@@ -107,6 +94,19 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
               onChange={handleChange}
               className="ui-input"
               style={{ marginTop: '6px' }}
+            />
+          </label>
+        )}
+
+        {selectedBlock.type === 'custom' && (
+          <label className="field">
+            カスタムHTML：
+            <textarea
+              name="html"
+              value={selectedBlock.html || ''}
+              onChange={handleChange}
+              className="ui-input"
+              style={{ marginTop: '6px', minHeight: '160px' }}
             />
           </label>
         )}

@@ -1,10 +1,10 @@
-export type BlockType = 'text' | 'image' | 'button';
+export type BlockType = 'image' | 'button' | 'custom';
 
 export interface BlockData {
   id: string;
   type: BlockType;
-  text?: string;
   src?: string;
   alt?: string;
   href?: string;
+  html?: string; // custom 用の生HTML
 }
