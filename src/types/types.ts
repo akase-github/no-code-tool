@@ -8,3 +8,11 @@ export interface BlockData {
   href?: string;
   html?: string; // custom 用の生HTML
 }
+
+export interface DocumentState {
+  titleText: string;
+  preheaderText: string;
+  templateId: string | null;
+  canvasWidth: number;
+  blocks: BlockData[];
+}
