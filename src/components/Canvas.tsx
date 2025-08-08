@@ -36,14 +36,19 @@ const SortableBlock: React.FC<{
     id: block.id,
   });
 
+  const isDragging = !!transform;
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    border: selected ? '2px solid #3b82f6' : undefined,
   } as React.CSSProperties;
 
   return (
-    <div ref={setNodeRef} className="canvas-block" style={style} {...attributes}>
+    <div
+      ref={setNodeRef}
+      className={`canvas-block${selected ? ' is-selected' : ''}${isDragging ? ' is-dragging' : ''}`}
+      style={style}
+      {...attributes}
+    >
       {/* ヘッダー */}
       <div className="canvas-block__header">
         {/* ドラッグ可能エリア */}
@@ -123,7 +128,7 @@ const Canvas: React.FC<CanvasProps> = ({
         overflowY: 'auto',
       }}
     >
-      <h3 style={{ marginBottom: '10px' }}>キャンバス（ドラッグで並び替え・✕で削除）</h3>
+      <div className="canvas-title">キャンバス（ドラッグで並び替え・✕で削除）</div>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -144,24 +149,22 @@ const Canvas: React.FC<CanvasProps> = ({
 
         <DragOverlay>
           {draggingBlock && (
-            <div
-              style={{
-                width: '100%',
-                maxWidth: '750px',
-                padding: '10px',
-                backgroundColor: '#fff',
-                border: '1px solid #ccc',
-              }}
-            >
-              {draggingBlock.type === 'image' && (
-                <img src={draggingBlock.src} alt="画像" style={{ maxWidth: '100%' }} />
-              )}
-              {draggingBlock.type === 'button' && (
-                <img src={draggingBlock.src} alt="画像ボタン" style={{ maxWidth: '100%' }} />
-              )}
-              {draggingBlock.type === 'custom' && (
-                <div dangerouslySetInnerHTML={{ __html: draggingBlock.html || '' }} />
-              )}
+            <div className="canvas-block canvas-block--overlay" style={{ width: '100%', maxWidth: 750 }}>
+              <div className="canvas-block__header">
+                <div style={{ visibility: 'hidden' }}>≡</div>
+                <div style={{ visibility: 'hidden' }}>×</div>
+              </div>
+              <div className="canvas-block__body">
+                {draggingBlock.type === 'image' && (
+                  <img src={draggingBlock.src} alt="画像" />
+                )}
+                {draggingBlock.type === 'button' && (
+                  <img src={draggingBlock.src} alt="画像ボタン" />
+                )}
+                {draggingBlock.type === 'custom' && (
+                  <div dangerouslySetInnerHTML={{ __html: draggingBlock.html || '' }} />
+                )}
+              </div>
             </div>
           )}
         </DragOverlay>

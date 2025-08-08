@@ -152,6 +152,16 @@ body {
   margin-bottom: 12px;
   overflow: hidden;
 }
+.canvas-block.is-selected {
+  /* レイアウトを崩さない強調: border太さは変えない */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35), var(--shadow);
+  border-color: #93c5fd;
+}
+.canvas-block.is-dragging {
+  cursor: grabbing;
+  opacity: 0.95;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18), 0 2px 8px rgba(15, 23, 42, 0.08);
+}
 .canvas-block__header {
   display: flex;
   align-items: center;
@@ -167,6 +177,12 @@ body {
   user-select: none;
 }
 .canvas-block__body { padding: 10px; }
+.canvas-block__body img { display: block; max-width: 100%; height: auto; }
+
+/* ドラッグ中のオーバーレイ */
+.canvas-block--overlay {
+  pointer-events: none;
+}
 
 /* Floating properties panel */
 .properties-panel {
