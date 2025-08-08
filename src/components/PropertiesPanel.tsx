@@ -47,83 +47,66 @@ const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   return (
     <div
       ref={panelRef}
-      style={{
-        position: 'absolute',
-        left: position.x,
-        top: position.y,
-        background: '#fff',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        padding: '0px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        zIndex: 1000,
-        minWidth: '300px',
-      }}
+      className="properties-panel"
+      style={{ position: 'absolute', left: position.x, top: position.y, zIndex: 1000 }}
     >
       {/* ドラッグ用ヘッダー */}
-      <div
-        onMouseDown={handleMouseDown}
-        style={{
-          cursor: 'move',
-          background: '#f0f0f0',
-          padding: '10px 16px',
-          borderBottom: '1px solid #ccc',
-          borderTopLeftRadius: '8px',
-          borderTopRightRadius: '8px',
-          fontWeight: 'bold',
-        }}
-      >
+      <div onMouseDown={handleMouseDown} className="properties-panel__header">
         プロパティ編集
       </div>
 
-      <div style={{ padding: '16px' }}>
+      <div className="properties-panel__body">
         {selectedBlock.type === 'text' && (
-          <label style={{ display: 'block', marginTop: '10px' }}>
+          <label className="field">
             テキスト内容：
             <input
               type="text"
               name="text"
               value={selectedBlock.text}
               onChange={handleChange}
-              style={{ width: '100%', marginTop: '5px', padding: '6px' }}
+              className="ui-input"
+              style={{ marginTop: '6px' }}
             />
           </label>
         )}
 
         {(selectedBlock.type === 'image' || selectedBlock.type === 'button') && (
           <>
-            <label style={{ display: 'block', marginTop: '10px' }}>
+            <label className="field">
               画像URL：
               <input
                 type="text"
                 name="src"
                 value={selectedBlock.src}
                 onChange={handleChange}
-                style={{ width: '100%', marginTop: '5px', padding: '6px' }}
+                className="ui-input"
+                style={{ marginTop: '6px' }}
               />
             </label>
-            <label style={{ display: 'block', marginTop: '10px' }}>
+            <label className="field">
               altテキスト：
               <input
                 type="text"
                 name="alt"
                 value={selectedBlock.alt || ''}
                 onChange={handleChange}
-                style={{ width: '100%', marginTop: '5px', padding: '6px' }}
+                className="ui-input"
+                style={{ marginTop: '6px' }}
               />
             </label>
           </>
         )}
 
         {selectedBlock.type === 'button' && (
-          <label style={{ display: 'block', marginTop: '10px' }}>
+          <label className="field">
             リンク：
             <input
               type="text"
               name="href"
               value={selectedBlock.href || ''}
               onChange={handleChange}
-              style={{ width: '100%', marginTop: '5px', padding: '6px' }}
+              className="ui-input"
+              style={{ marginTop: '6px' }}
             />
           </label>
         )}

@@ -15,36 +15,35 @@ const BlockList: React.FC<BlockListProps> = ({ onAddBlock, onTemplateSelect }) =
   ];
 
   return (
-    <div style={{ width: '180px', borderRight: '1px solid #ccc', padding: '10px' }}>
-      <h3>テンプレート</h3>
-      <select
-        onChange={(e) => onTemplateSelect(e.target.value)}
-        style={{ width: '100%', marginBottom: '20px', padding: '5px' }}
-      >
-        <option value="">⚠️テンプレートを選択してください</option>
-        {templates.map((tpl) => (
-          <option key={tpl.id} value={tpl.id}>
-            {tpl.name}
-          </option>
-        ))}
-      </select>
-
-      <h3>ブロック一覧</h3>
-      {blocks.map((block) => (
-        <button
-          key={block.type}
-          onClick={() => onAddBlock(block.type)}
-          style={{
-            display: 'block',
-            width: '100%',
-            marginBottom: '10px',
-            padding: '10px',
-            cursor: 'pointer',
-          }}
+    <div>
+      <div className="group">
+        <h3 className="section-title">テンプレート</h3>
+        <select
+          onChange={(e) => onTemplateSelect(e.target.value)}
+          className="ui-select"
+          style={{ marginBottom: '10px' }}
         >
-          {block.label}
-        </button>
-      ))}
+          <option value="">⚠️テンプレートを選択してください</option>
+          {templates.map((tpl) => (
+            <option key={tpl.id} value={tpl.id}>
+              {tpl.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="group">
+        <h3 className="section-title">ブロック一覧</h3>
+        {blocks.map((block) => (
+          <button
+            key={block.type}
+            onClick={() => onAddBlock(block.type)}
+            className="ui-button block-button"
+          >
+            {block.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

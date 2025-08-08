@@ -75,18 +75,38 @@ const App: React.FC = () => {
   const selectedBlock = blocks.find((b) => b.id === selectedBlockId) || null;
 
    return (
-    <div style={{ display: 'flex', height: '100vh', overflowX: 'auto', overscrollBehaviorX: 'none', }}>
+    <div className="app-layout" style={{ overscrollBehaviorX: 'none' }}>
       {/* サイドバー */}
-      <div style={{ width: '200px', borderRight: '1px solid #ccc', padding: '10px' }}>
+      <div className="sidebar">
         <BlockList onAddBlock={handleAddBlock} onTemplateSelect={handleTemplateSelect} />
-        <div style={{ marginTop: '20px' }}>
-          {/* ...タイトル・プリヘッダー入力... */}
+        <div className="group" style={{ marginTop: '12px' }}>
+          <h3 className="section-title">メール設定</h3>
+          <label className="field">
+            タイトル
+            <input
+              type="text"
+              value={titleText}
+              onChange={(e) => setTitleText(e.target.value)}
+              className="ui-input"
+              style={{ marginTop: 6 }}
+            />
+          </label>
+          <label className="field">
+            プリヘッダー
+            <input
+              type="text"
+              value={preheaderText}
+              onChange={(e) => setPreheaderText(e.target.value)}
+              className="ui-input"
+              style={{ marginTop: 6 }}
+            />
+          </label>
         </div>
       </div>
 
       {/* キャンバスとプレビュー中間エリア */}
       <div
-        style={{ display: 'flex' }}
+        className="workarea"
         onWheel={(e) => {
           // 横スクロールが発生した場合に親（ブラウザ）への伝播を防ぐ
           if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
@@ -95,15 +115,7 @@ const App: React.FC = () => {
         }}
       >
         {/* キャンバス */}
-        <div
-          style={{
-            width: `${canvasWidth}px`,
-            borderRight: '1px solid #ccc',
-            padding: '10px',
-            boxSizing: 'border-box',
-            position: 'relative',
-          }}
-        >
+        <div className="canvas-wrapper" style={{ width: `${canvasWidth}px` }}>
           <Canvas
             blocks={blocks}
             selectedBlockId={selectedBlockId}
@@ -115,12 +127,7 @@ const App: React.FC = () => {
 
         {/* リサイズバー */}
         <div
-          style={{
-            width: '12px',
-            cursor: 'col-resize',
-            backgroundColor: '#eee',
-            position: 'relative',
-          }}
+          className="resizer"
           onMouseDown={(e) => {
             const startX = e.clientX;
             const startWidth = canvasWidth;
@@ -140,19 +147,7 @@ const App: React.FC = () => {
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
           }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: '50%',
-              width: '2px',
-              backgroundColor: '#ccc',
-              transform: 'translateX(-50%)',
-            }}
-          />
-        </div>
+        />
 
         {/* プレビュー */}
         <Preview html={finalHtml} />

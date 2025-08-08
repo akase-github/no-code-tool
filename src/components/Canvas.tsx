@@ -39,38 +39,15 @@ const SortableBlock: React.FC<{
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    border: selected ? '2px solid #007bff' : '1px solid #ccc',
-    background: '#fff',
-    marginBottom: '10px',
-    boxShadow: selected ? '0 0 0 2px rgba(0, 123, 255, 0.2)' : 'none',
-  };
+    border: selected ? '2px solid #3b82f6' : undefined,
+  } as React.CSSProperties;
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
+    <div ref={setNodeRef} className="canvas-block" style={style} {...attributes}>
       {/* ヘッダー */}
-      <div
-        style={{
-          backgroundColor: '#f0f0f0',
-          padding: '8px',
-          borderBottom: '1px solid #ddd',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          fontWeight: 'bold',
-          color: '#555',
-        }}
-      >
+      <div className="canvas-block__header">
         {/* ドラッグ可能エリア */}
-        <div
-          {...listeners}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexGrow: 1,
-            cursor: 'grab',
-            userSelect: 'none',
-          }}
-        >
+        <div {...listeners} className="canvas-block__grab" style={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
           ≡
         </div>
 
@@ -95,10 +72,7 @@ const SortableBlock: React.FC<{
       </div>
 
       {/* ブロック本体 */}
-      <div
-        onClick={() => onSelect(block.id)}
-        style={{ cursor: 'default', padding: '10px' }}
-      >
+      <div onClick={() => onSelect(block.id)} className="canvas-block__body">
         {block.type === 'text' && <p>{block.text}</p>}
         {block.type === 'image' && (
           <img src={block.src} alt="画像" style={{ maxWidth: '100%' }} />

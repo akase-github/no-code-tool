@@ -12,18 +12,11 @@ const Preview: React.FC<PreviewProps> = ({ html }) => {
   };
 
   return (
-    <div
-      style={{
-        width: '750px',
-        borderLeft: '1px solid #ccc',
-        padding: '10px',
-        backgroundColor: '#fafafa',
-      }}
-    >
-      <h3>プレビュー</h3>
+    <div className="preview-pane">
+      <h3 className="section-title">プレビュー</h3>
 
-      <div style={{ marginBottom: '10px' }}>
-        <button onClick={handleOpenHtmlInNewTab}>
+      <div className="open-new-tab">
+        <button onClick={handleOpenHtmlInNewTab} className="ui-button">
           🔗 別タブで開く
         </button>
       </div>
