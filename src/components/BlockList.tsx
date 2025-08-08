@@ -1,6 +1,6 @@
 import React from 'react';
 import { BlockType } from '../types/types';
-import { templates } from '../templates/templates';
+import TemplateManager from './TemplateManager';
 
 interface BlockListProps {
   onAddBlock: (type: BlockType) => void;
@@ -16,21 +16,7 @@ const BlockList: React.FC<BlockListProps> = ({ onAddBlock, onTemplateSelect }) =
 
   return (
     <div>
-      <div className="group">
-        <h3 className="section-title">テンプレート</h3>
-        <select
-          onChange={(e) => onTemplateSelect(e.target.value)}
-          className="ui-select"
-          style={{ marginBottom: '10px' }}
-        >
-          <option value="">⚠️テンプレートを選択してください</option>
-          {templates.map((tpl) => (
-            <option key={tpl.id} value={tpl.id}>
-              {tpl.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <TemplateManager onSelectTemplateId={onTemplateSelect} />
 
       <div className="group">
         <h3 className="section-title">ブロック一覧</h3>

@@ -6,6 +6,7 @@ import Canvas from './components/Canvas';
 import { v4 as uuidv4 } from 'uuid';
 import { BlockData, BlockType, DocumentState } from './types/types';
 import { templates, HtmlTemplate } from './templates/templates';
+import { getUserTemplates } from './services/templateStore';
 import { useHistory } from './hooks/useHistory';
 
 const App: React.FC = () => {
@@ -61,6 +62,18 @@ const App: React.FC = () => {
 
   // templateId からテンプレートを解決
   useEffect(() => {
+    if (!present.templateId) {
+      setSelectedTemplate(null);
+      setTemplateHtml('');
+      return;
+    }
+    if (present.templateId.startsWith('user:')) {
+      const rawId = present.templateId.replace('user:', '');
+      const userTpl = getUserTemplates().find((t) => t.id === rawId) || null;
+      setSelectedTemplate(null);
+      setTemplateHtml(userTpl?.html || '');
+      return;
+    }
     const found = templates.find((t) => t.id === present.templateId) || null;
     setSelectedTemplate(found);
   }, [present.templateId]);
@@ -92,12 +105,10 @@ const App: React.FC = () => {
     })
     .join('');
 
+  // ユーザー作成テンプレートの適用（user:ID の場合は templateHtml をそのまま使用するため、
+  // present.templateId に 'user:' が含まれていてもここでは置換ロジックを共通に適用）
   const finalHtml = templateHtml
     .replace('TITLE_PLACEHOLDER', present.titleText)
-    .replace(
-      '<span id="preheader-placeholder" style="color:#f3f3f3;font-size:0;line-height:0;"></span>',
-      `<div style="display:none; mso-hide:all; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">${present.preheaderText}</div>`
-    )
     .replace('PREHEADER_PLACEHOLDER', present.preheaderText)
     .replace('<tr id="block-placeholder"></tr>', renderedBlocks)
 

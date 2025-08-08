@@ -213,6 +213,26 @@ label.field > .hint { font-size: 11px; color: #94a3b8; margin-left: 6px; }
 
 .open-new-tab { margin-bottom: 10px; }
 
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 2000;
+}
+.modal-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  width: 760px;
+  max-width: 90vw;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  z-index: 2001;
+}
+
 /* Scrollbar (WebKit) */
 *::-webkit-scrollbar { width: 10px; height: 10px; }
 *::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
