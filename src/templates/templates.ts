@@ -5,5 +5,9 @@ export interface HtmlTemplate {
 }
 
 export const templates: HtmlTemplate[] = [
-  { id: 'ad', name: 'AD', file: '/templates/ad.html' },
+  {
+    id: 'ad',
+    name: 'AD',
+    file: `${process.env.PUBLIC_URL || ''}/templates/ad.html`,
+  },
 ];
