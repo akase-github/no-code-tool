@@ -15,6 +15,7 @@ const App: React.FC = () => {
     () => ({
       titleText: 'メールタイトル',
       preheaderText: 'プリヘッダーのテキスト',
+      mirrorPageUrl: 'https://example.com',
       templateId: null,
       canvasWidth: 600,
       blocks: [],
@@ -110,6 +111,7 @@ const App: React.FC = () => {
   const finalHtml = templateHtml
     .replace('TITLE_PLACEHOLDER', present.titleText)
     .replace('PREHEADER_PLACEHOLDER', present.preheaderText)
+    .replace('MIRRORPAGE_PLACEHOLDER', present.mirrorPageUrl)
     .replace('<tr id="block-placeholder"></tr>', renderedBlocks)
 
   const selectedBlock = present.blocks.find((b) => b.id === selectedBlockId) || null;
@@ -137,6 +139,16 @@ const App: React.FC = () => {
               type="text"
               value={present.preheaderText}
               onChange={(e) => set({ ...present, preheaderText: e.target.value })}
+              className="ui-input"
+              style={{ marginTop: 6 }}
+            />
+          </label>
+          <label className="field">
+            ミラーページURL
+            <input
+              type="text"
+              value={present.mirrorPageUrl}
+              onChange={(e) => set({ ...present, mirrorPageUrl: e.target.value })}
               className="ui-input"
               style={{ marginTop: 6 }}
             />
@@ -184,7 +196,15 @@ const App: React.FC = () => {
                   const parsed = JSON.parse(text) as DocumentState;
                   // 最低限のバリデーション
                   if (!parsed || !('blocks' in parsed)) throw new Error('invalid');
-                  set(parsed);
+                  const normalized: DocumentState = {
+                    titleText: parsed.titleText ?? 'メールタイトル',
+                    preheaderText: parsed.preheaderText ?? 'プリヘッダーのテキスト',
+                    mirrorPageUrl: (parsed as any).mirrorPageUrl ?? '',
+                    templateId: 'templateId' in parsed ? parsed.templateId : null,
+                    canvasWidth: parsed.canvasWidth ?? 600,
+                    blocks: parsed.blocks ?? [],
+                  };
+                  set(normalized);
                 } catch {
                   alert('不正なJSONです');
                 } finally {

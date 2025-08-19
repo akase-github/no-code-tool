@@ -12,6 +12,7 @@ export interface BlockData {
 export interface DocumentState {
   titleText: string;
   preheaderText: string;
+  mirrorPageUrl: string;
   templateId: string | null;
   canvasWidth: number;
   blocks: BlockData[];
