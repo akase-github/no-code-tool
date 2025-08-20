@@ -8,6 +8,6 @@ export const templates: HtmlTemplate[] = [
   {
     id: 'ad',
     name: 'AD',
-    file: `${process.env.PUBLIC_URL || ''}/no-code-tool/templates/ad.html`,
+    file: `${process.env.PUBLIC_URL || ''}/templates/ad.html`,
   },
 ];
