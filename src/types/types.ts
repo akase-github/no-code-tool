@@ -14,6 +14,5 @@ export interface DocumentState {
   preheaderText: string;
   mirrorPageUrl: string;
   templateId: string | null;
-  canvasWidth: number;
   blocks: BlockData[];
 }

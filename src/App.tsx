@@ -17,7 +17,6 @@ const App: React.FC = () => {
       preheaderText: 'プリヘッダーのテキスト',
       mirrorPageUrl: 'https://example.com',
       templateId: null,
-      canvasWidth: 600,
       blocks: [],
     }),
     []
@@ -25,6 +24,7 @@ const App: React.FC = () => {
   const { present, set, undo, redo, canUndo, canRedo } = useHistory<DocumentState>(initialDoc);
 
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
+  const [canvasWidth, setCanvasWidth] = useState<number>(600);
   const [selectedTemplate, setSelectedTemplate] = useState<HtmlTemplate | null>(null);
   const [templateHtml, setTemplateHtml] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -112,7 +112,7 @@ const App: React.FC = () => {
     .replace('TITLE_PLACEHOLDER', present.titleText)
     .replace('PREHEADER_PLACEHOLDER', present.preheaderText)
     .replace('MIRRORPAGE_PLACEHOLDER', present.mirrorPageUrl)
-    .replace('<tr id="block-placeholder"></tr>', renderedBlocks)
+    .replace('<tr id="block-placeholder"></tr>', renderedBlocks);
 
   const selectedBlock = present.blocks.find((b) => b.id === selectedBlockId) || null;
 
@@ -169,7 +169,7 @@ const App: React.FC = () => {
             <button
               className="ui-button secondary"
               onClick={() => {
-                const doc = { ...present };
+                const doc = { ...present, canvasWidth };
                 const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -193,18 +193,20 @@ const App: React.FC = () => {
                 if (!file) return;
                 const text = await file.text();
                 try {
-                  const parsed = JSON.parse(text) as DocumentState;
+                  const parsedAny = JSON.parse(text) as any;
                   // 最低限のバリデーション
-                  if (!parsed || !('blocks' in parsed)) throw new Error('invalid');
+                  if (!parsedAny || !('blocks' in parsedAny)) throw new Error('invalid');
                   const normalized: DocumentState = {
-                    titleText: parsed.titleText ?? 'メールタイトル',
-                    preheaderText: parsed.preheaderText ?? 'プリヘッダーのテキスト',
-                    mirrorPageUrl: (parsed as any).mirrorPageUrl ?? '',
-                    templateId: 'templateId' in parsed ? parsed.templateId : null,
-                    canvasWidth: parsed.canvasWidth ?? 600,
-                    blocks: parsed.blocks ?? [],
+                    titleText: parsedAny.titleText ?? 'メールタイトル',
+                    preheaderText: parsedAny.preheaderText ?? 'プリヘッダーのテキスト',
+                    mirrorPageUrl: parsedAny.mirrorPageUrl ?? '',
+                    templateId: 'templateId' in parsedAny ? parsedAny.templateId : null,
+                    blocks: parsedAny.blocks ?? [],
                   };
                   set(normalized);
+                  if (typeof parsedAny.canvasWidth === 'number') {
+                    setCanvasWidth(parsedAny.canvasWidth);
+                  }
                 } catch {
                   alert('不正なJSONです');
                 } finally {
@@ -227,7 +229,7 @@ const App: React.FC = () => {
         }}
       >
         {/* キャンバス */}
-        <div className="canvas-wrapper" style={{ width: `${present.canvasWidth}px` }}>
+        <div className="canvas-wrapper" style={{ width: `${canvasWidth}px` }}>
           <Canvas
             blocks={present.blocks}
             selectedBlockId={selectedBlockId}
@@ -242,12 +244,12 @@ const App: React.FC = () => {
           className="resizer"
           onMouseDown={(e) => {
             const startX = e.clientX;
-            const startWidth = present.canvasWidth;
+            const startWidth = canvasWidth;
             document.body.style.userSelect = 'none';
 
             const onMouseMove = (e: MouseEvent) => {
               const newWidth = Math.max(300, startWidth + (e.clientX - startX));
-              set({ ...present, canvasWidth: newWidth });
+              setCanvasWidth(newWidth);
             };
 
             const onMouseUp = () => {
