@@ -121,11 +121,8 @@ const Canvas: React.FC<CanvasProps> = ({
   return (
     <div
       style={{
-        flex: 1,
         padding: '20px',
-        minHeight: '100vh',
         backgroundColor: '#f7f7f7',
-        overflowY: 'auto',
       }}
     >
       <div className="canvas-title">キャンバス（ドラッグで並び替え・✕で削除）</div>

@@ -2,10 +2,9 @@ import React from 'react';
 
 interface PreviewProps {
   html: string;
-  width?: number; // px
 }
 
-const Preview: React.FC<PreviewProps> = ({ html, width = 750 }) => {
+const Preview: React.FC<PreviewProps> = ({ html }) => {
   const handleOpenHtmlInNewTab = () => {
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -13,7 +12,7 @@ const Preview: React.FC<PreviewProps> = ({ html, width = 750 }) => {
   };
 
   return (
-    <div className="preview-pane" style={{ width }}>
+    <div className="preview-pane">
       <h3 className="section-title">プレビュー</h3>
 
       <div className="open-new-tab">

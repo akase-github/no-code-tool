@@ -61,6 +61,8 @@ body {
   display: flex;
   flex: 1;
   min-width: 0;
+  /* コンテンツが横幅を超える場合にスクロールできるように */
+  overflow: auto;
 }
 
 .canvas-wrapper {
@@ -68,6 +70,11 @@ body {
   border-right: 1px solid var(--border);
   padding: 16px;
   position: relative;
+  /* 固定高さにして内部を縦スクロール */
+  height: 100vh;
+  overflow-y: auto;
+  /* 子を縮めない */
+  flex: 0 0 auto;
 }
 
 .resizer {
@@ -75,6 +82,7 @@ body {
   cursor: col-resize;
   background: linear-gradient(180deg, #eef2ff 0%, #e5e7eb 100%);
   position: relative;
+  flex: 0 0 auto;
 }
 .resizer::after {
   content: '';
@@ -94,6 +102,8 @@ body {
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
+  /* 子を縮めない */
+  flex: 0 0 auto;
 }
 
 /* プレビュー内のテーブル幅が余白で切れないように */
